@@ -1,0 +1,98 @@
+/* Carrito.css */
+.carrito-contenido {
+  padding: 3rem 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.carrito-total {
+  font-size: 2rem;
+  color: #0d6efd;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 800;
+}
+
+.reservas-title {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.sin-reservas {
+  font-style: italic;
+  color: #888;
+  text-align: center;
+}
+
+.reservas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reserva-item {
+  background: #ffffff;
+  border-left: 5px solid #0d6efd;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.reserva-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.reserva-item p {
+  margin: 0.4rem 0;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.reserva-botones {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-pagar,
+.btn-eliminar {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-pagar {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-pagar:hover {
+  background-color: #0b5ed7;
+  transform: scale(1.05);
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.loading {
+  text-align: center;
+  padding-top: 3rem;
+  font-size: 1.3rem;
+  color: #666;
+}

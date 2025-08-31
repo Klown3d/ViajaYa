@@ -1,0 +1,42 @@
+.register-form {
+  padding: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 500px;
+}
+
+.register-volaya {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 35px;
+  gap: 8px;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.192);
+  padding: 5px;
+}
+
+.register-title {
+  font-weight: bold !important;
+}
+
+.register-p {
+  text-align: center;
+}
+
+.register-label {
+  font-weight: bold;
+}
+
+.register-button {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.register-cuenta {
+  font-weight: bold;
+}
+
+input[type="password"] + .text-danger {
+  font-size: 0.9rem;
+  margin-top: 5px;
+}

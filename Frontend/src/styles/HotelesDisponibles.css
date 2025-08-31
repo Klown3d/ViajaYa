@@ -1,0 +1,99 @@
+/* Contenedor principal */
+.hotel-container {
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Resumen del paquete */
+.package-summary {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.package-summary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.package-summary p {
+  margin-bottom: 0.8rem;
+  color: #333;
+}
+
+.package-summary strong {
+  color: #007bff;
+}
+
+/* Título de hoteles */
+.hotel-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Listado de hoteles */
+.hotel-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Tarjetas de hoteles */
+.hotel-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hotel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hotel-card h5 {
+  font-size: 1.2rem;
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+
+.hotel-card p {
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+  color: #555;
+}
+
+.hotel-card strong {
+  color: #333;
+}
+
+/* Botón de agregar al carrito */
+.btn-add-to-cart {
+  background-color: #28a745;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.btn-add-to-cart:hover {
+  background-color: #218838;
+}
+
+/* Adaptación móvil */
+@media (max-width: 768px) {
+  .hotel-list {
+    grid-template-columns: 1fr;
+  }
+}

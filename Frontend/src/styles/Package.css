@@ -1,0 +1,195 @@
+/* -------------------- Estilos Generales -------------------- */
+
+.paquetes-container {
+  padding: 4rem 1rem;
+}
+
+.titulo-principal {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #0d6efd;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------- Tarjetas de Paquete -------------------- */
+
+.paquete-card {
+  border: none;
+  border-radius: 12px;
+  background: #f9fcff;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.paquete-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.paquete-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 4px;
+  background: #0d6efd;
+  transition: width 0.3s ease;
+}
+
+.paquete-card:hover::after {
+  width: 90%;
+}
+
+.paquete-list li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.paquete-list i {
+  margin-right: 6px;
+  color: #0d6efd;
+}
+
+.boton-reserva {
+  transition: all 0.3s ease;
+}
+
+.boton-reserva:hover {
+  transform: scale(1.05);
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+}
+
+/* -------------------- Carrusel de Paquetes -------------------- */
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.carousel-container-inner {
+  overflow: hidden;
+  width: calc(100% - 120px); /* Espacio para flechas */
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.paquete-col {
+  min-width: calc(100% / 3);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+/* -------------------- Flechas del Carrusel -------------------- */
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #0d6efd;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 2rem;
+  color: #0d6efd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.carousel-arrow:hover {
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-arrow.prev {
+  left: 0;
+}
+
+.carousel-arrow.next {
+  right: 0;
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #999;
+}
+
+/* -------------------- Responsividad -------------------- */
+
+@media (max-width: 992px) {
+  .paquete-col {
+    min-width: calc(100% / 2);
+  }
+
+  .carousel-container-inner {
+    width: calc(100% - 100px);
+  }
+}
+
+@media (max-width: 768px) {
+  .paquete-col {
+    min-width: 100%;
+  }
+
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .carousel-arrow.prev {
+    left: 0;
+  }
+
+  .carousel-arrow.next {
+    right: 0;
+  }
+
+  .carousel-container-inner {
+    width: calc(100% - 80px);
+  }
+}

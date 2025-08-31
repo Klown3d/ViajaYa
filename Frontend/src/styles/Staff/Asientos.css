@@ -1,0 +1,208 @@
+.contenedor-asientos {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+.titulo-clase {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #0d6efd;
+  font-weight: bold;
+}
+
+.datos-vuelo {
+  background-color: #f8f9fa; /* gris muy claro */
+  border: 1px solid #ced4da; /* borde gris */
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1); /* sombra azul suave */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.datos-vuelo h3 {
+  color: #0d6efd;
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 5px;
+}
+
+.datos-vuelo p {
+  font-size: 1.1rem;
+  margin: 6px 0;
+  color: #343a40;
+}
+
+.datos-vuelo strong {
+  color: #0d6efd;
+}
+
+.cabina-avion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.fila-avion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.lado-izquierdo,
+.lado-derecho {
+  display: flex;
+  gap: 10px;
+}
+
+.pasillo {
+  width: 40px;
+  height: 10px;
+}
+
+.asiento {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.contenedor-principal-asientos {
+  display: flex;
+  gap: 30px;
+  padding: 20px;
+}
+
+.contenedor-asientos {
+  flex: 3;
+}
+
+.resumen-asientos {
+  flex: 1;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.resumen-asientos h5 {
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.resumen-asientos ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.resumen-asientos li {
+  padding: 5px 0;
+  border-bottom: 1px dashed #ccc;
+  font-size: 15px;
+}
+
+
+.asiento:hover {
+  transform: scale(1.1);
+}
+
+.asiento.libre {
+  background-color: #6c757d;
+}
+
+.asiento.reservado {
+  background-color: #dc3545;
+}
+
+.asiento.vip {
+  border: 3px solid gold;
+}
+
+.asiento.general {
+  border: 3px solid #0d6efd;
+}
+
+.asiento.seleccionado {
+  border: 2px solid #198754;
+  background-color: #000;
+}
+
+.leyenda-asientos {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.leyenda {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: white;
+  font-size: 0.85rem;
+}
+
+.leyenda.libre {
+  background-color: #6c757d;
+}
+
+.leyenda.reservado {
+  background-color: #dc3545;
+}
+
+.leyenda.vip {
+  background-color: #ffc107;
+  color: black;
+}
+
+.leyenda.seleccionado {
+  background-color: #198754;
+}
+
+@media (max-width: 768px) {
+  .contenedor-principal-asientos {
+    flex-direction: column;
+  }
+
+  .contenedor-asientos,
+  .resumen-asientos {
+    width: 100%;
+  }
+
+  .fila-avion {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lado-izquierdo,
+  .lado-derecho {
+    justify-content: center;
+  }
+
+  .asiento {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+}

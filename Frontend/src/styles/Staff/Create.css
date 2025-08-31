@@ -1,0 +1,14 @@
+.create-title {
+  font-weight: 900 !important;
+  text-align: center;
+}
+
+.create-label {
+  font-weight: bold;
+}
+
+.create-button {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
