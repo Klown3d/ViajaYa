@@ -60,8 +60,8 @@ function Package() {
     if (isAuthenticated) {
       navigate('/reservar_asientos', {
         state: {
-          vueloIda: paquete.vuelo_ida_obj,
-          vueloVuelta: paquete.vuelo_vuelta_obj,
+          viajeIda: paquete.viaje_ida_obj,  // Cambiado de vueloIda
+          viajeVuelta: paquete.viaje_vuelta_obj,  // Cambiado de vueloVuelta
           personas: paquete.personas,
           destinoId: paquete.destino_id,
           auto: paquete.auto,
@@ -72,9 +72,8 @@ function Package() {
         }
       });
     } else {
-      // Redirige al login o muestra un mensaje si no está autenticado
       alert("Por favor, inicie sesión para elegir los asientos.");
-      navigate('/login'); // Ajusta la ruta de login
+      navigate('/login'); 
     }
   };
 
@@ -109,8 +108,8 @@ function Package() {
                       </h5>
                       <ul className="list-unstyled paquete-list">
                         <li><i className="bx bx-user"></i> <strong>Personas:</strong> {paquete.personas}</li>
-                        <li><i className="bx bx-plane-alt"></i> <strong>Vuelo ida:</strong> {formatearFecha(paquete.vuelo_ida_fecha)} - {paquete.vuelo_ida}</li>
-                        <li><i className="bx bx-plane-alt"></i> <strong>Vuelo vuelta:</strong> {formatearFecha(paquete.vuelo_vuelta_fecha)} - {paquete.vuelo_vuelta}</li>
+                        <li><i className="bx bx-bus"></i> <strong>Viaje ida:</strong> {formatearFecha(paquete.viaje_ida_fecha)} - {paquete.viaje_ida}</li>
+                        <li><i className="bx bx-bus"></i> <strong>Viaje vuelta:</strong> {formatearFecha(paquete.viaje_vuelta_fecha)} - {paquete.viaje_vuelta}</li>
                         <li><i className="bx bx-building-house"></i> <strong>Hotel:</strong> {paquete.hotel}</li>
                         <li><i className="bx bx-car"></i> <strong>Auto:</strong> {paquete.auto || 'Sin auto'}</li>
                         <li><i className="bx bx-dollar-circle"></i> <strong>Total:</strong> ${parseFloat(paquete.total).toLocaleString()}</li>

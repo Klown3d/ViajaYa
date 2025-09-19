@@ -10,8 +10,8 @@ function HotelesDisponibles() {
     costoTotal,
     costoIda,
     costoVuelta,
-    vueloIda,
-    vueloVuelta,
+    viajeIda,  // Cambiado de vueloIda
+    viajeVuelta,  // Cambiado de vueloVuelta
     personas,
     destinoId,
     fechaSalida,
@@ -32,10 +32,10 @@ function HotelesDisponibles() {
     }).format(valor);
 
   const calcularNoches = () => {
-    if (!vueloIda?.fecha || !vueloVuelta?.fecha) return 1;
+    if (!viajeIda?.fecha_salida || !viajeVuelta?.fecha_salida) return 1;
 
-    const salida = new Date(vueloIda.fecha);
-    const vuelta = new Date(vueloVuelta.fecha);
+    const salida = new Date(viajeIda.fecha_salida);
+    const vuelta = new Date(viajeVuelta.fecha_salida);
 
     salida.setHours(0, 0, 0, 0);
     vuelta.setHours(0, 0, 0, 0);
@@ -80,8 +80,8 @@ function HotelesDisponibles() {
 
       const data = {
         personas,
-        vuelo_ida: vueloIda.id,
-        vuelo_vuelta: vueloVuelta.id,
+        viaje_ida: viajeIda.id,  
+        viaje_vuelta: viajeVuelta.id,  
         hotel: hotel.id,
         total: totalFinal,
         asiento_ida: seleccionIda.map(a => a.id),
@@ -102,7 +102,6 @@ function HotelesDisponibles() {
       if (res.ok) {
         alert(`Paquete creado: ${result.message} - Total: ${formatoPesos(result.costo_total)}`);
         
-        // Redirigir al carrito
         navigate('/carrito');
       } else {
         alert('Error al crear paquete: ' + JSON.stringify(result));
@@ -116,8 +115,8 @@ function HotelesDisponibles() {
     <div className="hotel-container">
       <div className="package-summary">
         <h3>💸 Total del paquete: {formatoPesos(costoTotal + totalAuto)}</h3>
-        <p><strong>🛫 Ida:</strong> {vueloIda.origen} → {vueloIda.destino} | {formatoPesos(costoIda)}</p>
-        <p><strong>🔙 Vuelta:</strong> {vueloVuelta.origen} → {vueloVuelta.destino} | {formatoPesos(costoVuelta)}</p>
+        <p><strong>🚌 Ida:</strong> {viajeIda.origen} → {viajeIda.destino} | {formatoPesos(costoIda)}</p>
+        <p><strong>🔙 Vuelta:</strong> {viajeVuelta.origen} → {viajeVuelta.destino} | {formatoPesos(costoVuelta)}</p>
         <p><strong>👥 Personas:</strong> {personas}</p>
         <p><strong>🛏️ Noches de estadía:</strong> {noches}</p>
 

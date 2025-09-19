@@ -18,7 +18,6 @@ function Register() {
 
   const { setIsAuthenticated, setUserData } = useAuth();
 
-
   const [showModal, setShowModal] = useState(false);
 
   const handleSuccess = () => {
@@ -29,7 +28,6 @@ function Register() {
     setShowModal(false);
     navigate("/login");
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,8 +108,8 @@ function Register() {
     <Container className="d-flex justify-content-center align-items-center" style={{ height: "800px" }}>
       <Form className="register-form shadow-lg" onSubmit={handleSubmit}>
         <div className="register-volaya mb-3 text-center">
-          <i className="bx bx-paper-plane" style={{ color: "#0d6efd", fontSize: "47px" }}></i>
-          <span className="ms-2">VolaYA</span>
+          <i className="bx bx-bus" style={{ color: "#0d6efd", fontSize: "47px" }}></i>
+          <span className="ms-2">BusYA</span>
         </div>
         <p className="mb-3 register-p text-center">Crea tu cuenta para comenzar la aventura</p>
 
@@ -157,7 +155,7 @@ function Register() {
               type="password"
               placeholder="Crea una contraseña"
               value={password}
-              onChange={handlePasswordChange} // Cambié el evento a handlePasswordChange
+              onChange={handlePasswordChange}
               required
             />
           </InputGroup>

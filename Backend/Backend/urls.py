@@ -6,18 +6,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('api.urls')),
 
-    # Registro y login
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
     path('log_code/', views.log_code, name='log_code'),
 
-    # Crear datos
     path('crear_persona/', views.crear_persona, name='crear_persona'),
     path('crear_paquete/', views.crear_paquete, name='crear_paquete'),
     path('admin_crear_paquete/', views.admin_crear_paquete, name='admin_crear_paquete'),
     path('hacer_pago/', views.realizar_pago, name='hacer_pago'),
 
-    # POST Jefe de ventas
     path('crear_pais/', views.crear_pais, name='crear_pais'),
     path('crear_ciudad/', views.crear_ciudad, name='crear_ciudad'),
     path('crear_auto/', views.crear_auto, name='crear_auto'),
@@ -27,7 +24,6 @@ urlpatterns = [
     path('crear_asiento/', views.crear_asiento, name='crear_asiento'),
     path('anular_pedido/<int:paquete_id>/', views.anular_pedido, name='anular_pedido'),
 
-    # GET generales
     path('conseguir_mi_usuario/', views.get_my_user, name='conseguir_mi_usuario'),
     path('conseguir_carrito/', views.get_carrito, name='conseguir_carrito'),
     path('conseguir_mis_reservas/', views.get_reservas_usuario, name='conseguir_mis_reservas'),
@@ -44,7 +40,6 @@ urlpatterns = [
     path('cotizar_vuelo/', views.calcular_cotizacion_vuelo),
     path('conseguir_hotel_ciudad/', views.get_hotel_ciudad, name='conseguir_hotel_ciudad'),
 
-    # GET Jefe de ventas
     path('conseguir_personas/', views.get_personas, name='conseguir_personas'),
     path('conseguir_paquetes_pendientes/', views.get_paquetes_pendientes, name='conseguir_paquetes_pendientes'),
     path('conseguir_facturas/', views.ver_facturas_a_cobrar, name='conseguir_facturas'), 
@@ -52,20 +47,16 @@ urlpatterns = [
     path('busqueda/', views.busqueda_general, name='busqueda_general'),
 
 
-    # DELETE generales
     path('eliminar_paquete/<int:paquete_id>/', views.eliminar_paquete, name='eliminar_paquete'),
 
 
-    # NUEVAS rutas de modelos agregados
     path('conseguir_vuelos/', views.get_vuelos, name='conseguir_vuelos'),
     path('conseguir_aviones/', views.get_aviones, name='conseguir_aviones'),
     path('conseguir_asientos/', views.get_asientos, name='conseguir_asientos'),
     path('conseguir_pagos/', views.get_pagos, name='conseguir_pagos'),
     path('conseguir_asientos_vuelo/<int:vuelo_id>/', views.get_asientos_vuelo, name='conseguir_asientos_vuelos'),
-   # path('conseguir_facturas_completas/', views.get_facturas_completas, name='conseguir_facturas_completas'),
 
 
-    #Actualizar 
     path('actualizar_vuelo/<int:vuelo_id>/', views.actualizar_vuelo, name='actualizar_vuelo'),
     path('actualizar_paquete/<int:paquete_id>/', views.actualizar_paquete, name='actualizar_paquete'),
     path('actualizar_hotel/<int:hotel_id>/', views.actualizar_hotel, name='actualizar_hotel'),

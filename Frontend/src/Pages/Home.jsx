@@ -39,20 +39,18 @@ function Welcome() {
   return (
     <div className="welcome">
       <h1 className="welcome__title">
-        Bienvenido a <span className="highlight">VolaYA</span>{" "}
-        <i className="bx bx-paper-plane" style={{ color: "#0d6efd" }}></i>
+        Bienvenido a <span className="highlight">BusYA</span>{" "}
+        <i className="bx bx-bus" style={{ color: "#0d6efd" }}></i>
       </h1>
 
       <p className="welcome__subtitle">
-        Explorá el mundo con nuestras ofertas de viaje únicas y viví experiencias inolvidables.
+        Explorá el mundo con nuestras ofertas de viaje en bus únicas y viví experiencias inolvidables.
       </p>
 
       <div className="welcome__buttons d-flex justify-content-center align-items-center gap-3 mb-5">
         <Search />
       </div>
     </div>
-      
-   
   );
 }
 

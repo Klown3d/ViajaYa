@@ -52,7 +52,6 @@ const Carrito = () => {
       });
   };
 
-
   useEffect(() => {
     const token = localStorage.getItem('access');
 
@@ -129,10 +128,11 @@ const Carrito = () => {
               <div key={reserva.id} className="reserva-item">
                 <p><strong>Descripción:</strong> {reserva.descripcion || 'Sin descripción'}</p>
                 <p><strong>Personas:</strong> {reserva.personas}</p>
-                <p><strong>Vuelo Ida:</strong> {reserva.vuelo_ida_obj?.origen_nombre} → {reserva.vuelo_ida_obj?.destino_nombre}</p>
-                <p><strong>Fecha Vuelo Ida:</strong> {formatFecha(reserva.vuelo_ida_fecha)}</p>
-                <p><strong>Vuelo Vuelta:</strong> {reserva.vuelo_vuelta_obj?.origen_nombre} → {reserva.vuelo_vuelta_obj?.destino_nombre}</p>
-                <p><strong>Fecha Vuelo Vuelta:</strong> {formatFecha(reserva.vuelo_vuelta_fecha)}</p>
+                {/* Cambiamos Vuelo por Viaje */}
+                <p><strong>Viaje Ida:</strong> {reserva.viaje_ida_obj?.origen_nombre} → {reserva.viaje_ida_obj?.destino_nombre}</p>
+                <p><strong>Fecha Viaje Ida:</strong> {formatFecha(reserva.viaje_ida_fecha)}</p>
+                <p><strong>Viaje Vuelta:</strong> {reserva.viaje_vuelta_obj?.origen_nombre} → {reserva.viaje_vuelta_obj?.destino_nombre}</p>
+                <p><strong>Fecha Viaje Vuelta:</strong> {formatFecha(reserva.viaje_vuelta_fecha)}</p>
                 <p><strong>Hotel:</strong> {reserva.hotel || 'Sin hotel'}</p>
                 <p><strong>Auto:</strong> {reserva.auto || 'Sin auto'}</p>
                 <p><strong>Asientos Ida:</strong> {

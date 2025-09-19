@@ -100,8 +100,8 @@ function Login() {
     <Container className="d-flex justify-content-center align-items-center" style={{ height: "800px" }}>
       <Form className="login-form shadow-lg" onSubmit={handleLogin}>
         <div className="login-volaya mb-3 text-center">
-          <i className="bx bx-paper-plane" style={{ color: "#0d6efd", fontSize: "47px" }}></i>
-          <span className="ms-2">VolaYA</span>
+          <i className="bx bx-bus" style={{ color: "#0d6efd", fontSize: "47px" }}></i>
+          <span className="ms-2">BusYA</span>
         </div>
         <p className="mb-3 login-p">Inicia sesión para continuar tu aventura</p>
 

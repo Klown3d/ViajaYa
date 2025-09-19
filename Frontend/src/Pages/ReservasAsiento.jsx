@@ -6,7 +6,7 @@ const ReservarAsiento = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { vueloIda, vueloVuelta, personas: personasRaw, destinoId, auto, autoSeleccionadoId, descripcion } = location.state || {};
+  const { viajeIda, viajeVuelta, personas: personasRaw, destinoId, auto, autoSeleccionadoId, descripcion } = location.state || {};
   const personas = parseInt(personasRaw);
 
   const [asientosIda, setAsientosIda] = useState([]);
@@ -17,21 +17,19 @@ const ReservarAsiento = () => {
   const [mostrarVuelta, setMostrarVuelta] = useState(false);
   const desdePaquete = location.state?.desdePaquete || false;
 
-
-
   const token = localStorage.getItem('access');
 
   useEffect(() => {
     const fetchAsientos = async () => {
       try {
         const [resIda, resVuelta] = await Promise.all([
-          fetch(`http://127.0.0.1:8000/conseguir_asientos_vuelo/${vueloIda.id}/`, {
+          fetch(`http://127.0.0.1:8000/conseguir_asientos_viaje/${viajeIda.id}/`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             }
           }),
-          fetch(`http://127.0.0.1:8000/conseguir_asientos_vuelo/${vueloVuelta.id}/`, {
+          fetch(`http://127.0.0.1:8000/conseguir_asientos_viaje/${viajeVuelta.id}/`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
@@ -53,18 +51,18 @@ const ReservarAsiento = () => {
     };
 
     fetchAsientos();
-  }, [vueloIda.id, vueloVuelta.id]);
+  }, [viajeIda.id, viajeVuelta.id]);
 
-    const crearYRedirigirPaquete = async () => {
+  const crearYRedirigirPaquete = async () => {
     try {
-      // Paso 1: Cotizar vuelos
-      const cotizacionIda = await cotizarVueloSimple(vueloIda.id, seleccionIda);
-      const cotizacionVuelta = await cotizarVueloSimple(vueloVuelta.id, seleccionVuelta);
+      // Paso 1: Cotizar viajes
+      const cotizacionIda = await cotizarViajeSimple(viajeIda.id, seleccionIda);
+      const cotizacionVuelta = await cotizarViajeSimple(viajeVuelta.id, seleccionVuelta);
 
       // Paso 2: Preparar datos para crear paquete
       const paqueteData = {
-        vuelo_ida: vueloIda.id,
-        vuelo_vuelta: vueloVuelta.id,
+        viaje_ida: viajeIda.id,
+        viaje_vuelta: viajeVuelta.id,
         hotel: location.state?.hotel_id || null, 
         auto: autoSeleccionadoId || null,
         personas,
@@ -98,77 +96,74 @@ const ReservarAsiento = () => {
     }
   };
 
+  const marcarAsientosEnCompra = async (asientos) => {
+    const token = localStorage.getItem('access');
+    const response = await fetch('http://127.0.0.1:8000/marcar_asientos_en_compra/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        asientos_ids: asientos.map(a => a.id),
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Error al marcar asientos como EN COMPRA');
+    }
+    return await response.json();
+  };
 
-    const marcarAsientosEnCompra = async (asientos) => {
-        const token = localStorage.getItem('access');
-        const response = await fetch('http://127.0.0.1:8000/marcar_asientos_en_compra/', {
-            method: 'POST',
-            headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            asientos_ids: asientos.map(a => a.id),
-            }),
-        });
-        if (!response.ok) {
-            throw new Error('Error al marcar asientos como EN COMPRA');
-        }
-        return await response.json();
-    };
-
-  const cotizarVuelo = async (vuelo, seleccion) => {
+  const cotizarViaje = async (viaje, seleccion) => {
     const token = localStorage.getItem('access');
 
-    const response = await fetch('http://127.0.0.1:8000/cotizar_vuelo/', {
-        method: 'POST',
-        headers: {
+    const response = await fetch('http://127.0.0.1:8000/cotizar_viaje/', {
+      method: 'POST',
+      headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-        vuelo_id: vuelo.id,
+      },
+      body: JSON.stringify({
+        viaje_id: viaje.id,
         asientos_ids: seleccion.map(a => a.id)
-        })
+      })
     });
 
     const data = await response.json();
     return data;
-    };
+  };
 
-
-    const handleSeleccionAsiento = (asiento, tipoVuelo) => {
-    const seleccion = tipoVuelo === 'ida' ? seleccionIda : seleccionVuelta;
-    const setSeleccion = tipoVuelo === 'ida' ? setSeleccionIda : setSeleccionVuelta;
+  const handleSeleccionAsiento = (asiento, tipoViaje) => {
+    const seleccion = tipoViaje === 'ida' ? seleccionIda : seleccionVuelta;
+    const setSeleccion = tipoViaje === 'ida' ? setSeleccionIda : setSeleccionVuelta;
 
     if (asiento.reservado) return;
 
     const yaSeleccionado = seleccion.find(a => a.id === asiento.id);
 
     if (yaSeleccionado) {
-        setSeleccion(prev => {
+      setSeleccion(prev => {
         const nuevaSeleccion = prev.filter(a => a.id !== asiento.id);
-        if (tipoVuelo === 'ida' && nuevaSeleccion.length < personas) {
-            setMostrarVuelta(false);
+        if (tipoViaje === 'ida' && nuevaSeleccion.length < personas) {
+          setMostrarVuelta(false);
         }
         return nuevaSeleccion;
-        });
+      });
     } else if (seleccion.length < personas) {
-        setSeleccion(prev => {
+      setSeleccion(prev => {
         const nuevaSeleccion = [...prev, asiento];
-        if (tipoVuelo === 'ida' && nuevaSeleccion.length === personas) {
-            setMostrarVuelta(true);
+        if (tipoViaje === 'ida' && nuevaSeleccion.length === personas) {
+          setMostrarVuelta(true);
         }
         return nuevaSeleccion;
-        });
+      });
     } else {
-        alert(`Solo puedes seleccionar hasta ${personas} asientos.`);
+      alert(`Solo puedes seleccionar hasta ${personas} asientos.`);
     }
-    };
+  };
 
-
-  const renderAsientos = (asientos, tipoVuelo) => {
-    const seleccion = tipoVuelo === 'ida' ? seleccionIda : seleccionVuelta;
+  const renderAsientos = (asientos, tipoViaje) => {
+    const seleccion = tipoViaje === 'ida' ? seleccionIda : seleccionVuelta;
 
     const renderFila = (filaAsientos, indexBase) => {
       const mitad = Math.ceil(filaAsientos.length / 2);
@@ -176,23 +171,23 @@ const ReservarAsiento = () => {
       const ladoDer = filaAsientos.slice(mitad);
 
       return (
-        <div key={indexBase} className="fila-avion">
-          <div className="lado-izquierdo">{ladoIzq.map(a => renderAsiento(a, tipoVuelo, seleccion))}</div>
+        <div key={indexBase} className="fila-bus">
+          <div className="lado-izquierdo">{ladoIzq.map(a => renderAsiento(a, tipoViaje, seleccion))}</div>
           <div className="pasillo" />
-          <div className="lado-derecho">{ladoDer.map(a => renderAsiento(a, tipoVuelo, seleccion))}</div>
+          <div className="lado-derecho">{ladoDer.map(a => renderAsiento(a, tipoViaje, seleccion))}</div>
         </div>
       );
     };
 
     const filas = [];
-    for (let i = 0; i < asientos.length; i += 6) {
-      filas.push(renderFila(asientos.slice(i, i + 6), i));
+    for (let i = 0; i < asientos.length; i += 4) {
+      filas.push(renderFila(asientos.slice(i, i + 4), i));
     }
 
     return filas;
   };
 
-  const renderAsiento = (asiento, tipoVuelo, seleccion) => {
+  const renderAsiento = (asiento, tipoViaje, seleccion) => {
     const isSeleccionado = seleccion.find(a => a.id === asiento.id);
     const clases = [
       'asiento',
@@ -205,7 +200,7 @@ const ReservarAsiento = () => {
       <div
         key={asiento.id}
         className={clases}
-        onClick={() => handleSeleccionAsiento(asiento, tipoVuelo)}
+        onClick={() => handleSeleccionAsiento(asiento, tipoViaje)}
       >
         {asiento.numero}
       </div>
@@ -214,14 +209,14 @@ const ReservarAsiento = () => {
 
   const puedeConfirmar = seleccionIda.length === personas && seleccionVuelta.length === personas;
 
-    const confirmarSeleccion = async () => {
-        const cotizacionIda = await cotizarVuelo(vueloIda, seleccionIda);
-        const cotizacionVuelta = await cotizarVuelo(vueloVuelta, seleccionVuelta);
+  const confirmarSeleccion = async () => {
+    const cotizacionIda = await cotizarViaje(viajeIda, seleccionIda);
+    const cotizacionVuelta = await cotizarViaje(viajeVuelta, seleccionVuelta);
 
     const datosCotizacion = {
       destinoId,
-      vueloIda,
-      vueloVuelta,
+      viajeIda,
+      viajeVuelta,
       seleccionIda,
       seleccionVuelta,
       personas,
@@ -232,92 +227,88 @@ const ReservarAsiento = () => {
       auto                 
     };
 
-        sessionStorage.setItem('cotizacion', JSON.stringify(datosCotizacion));
+    sessionStorage.setItem('cotizacion', JSON.stringify(datosCotizacion));
 
-        navigate('/hoteles-disponibles', { state: datosCotizacion });
+    navigate('/hoteles-disponibles', { state: datosCotizacion });
+  };
 
-    };
+  const cotizarViajeSimple = async (viajeId, asientos) => {
+    const token = localStorage.getItem('access');
 
-    const cotizarVueloSimple = async (vueloId, asientos) => {
-  const token = localStorage.getItem('access');
+    const response = await fetch('http://127.0.0.1:8000/cotizar_viaje/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        viaje_id: viajeId,
+        asientos_ids: asientos.map(a => a.id)
+      })
+    });
 
-  const response = await fetch('http://127.0.0.1:8000/cotizar_vuelo/', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      vuelo_id: vueloId,
-      asientos_ids: asientos.map(a => a.id)
-    })
-  });
+    if (!response.ok) throw new Error('Error al cotizar el viaje');
 
-  if (!response.ok) throw new Error('Error al cotizar el vuelo');
-
-  return await response.json();
-};
-
+    return await response.json();
+  };
 
   return (
-        <div className="contenedor-principal-asientos">
-            <div className="pantalla-asientos">
-                <div className={`pantalla paso-ida ${mostrarVuelta ? 'oculto' : ''}`}>
-                <h3>
-                  Asientos para vuelo de ida (
-                  {desdePaquete ? `Vuelo #${vueloIda.id}` : `${vueloIda.origen} → ${vueloIda.destino}`}
-                  )
-                </h3>
-                {renderAsientos(asientosIda, 'ida')}
-                <p className="text-muted mt-3">🧍 Seleccioná tus asientos de ida para continuar.</p>
-                </div>
-
-                <div className={`pantalla paso-vuelta ${mostrarVuelta ? 'visible' : ''}`}>
-                <h3>
-                  Asientos para vuelo de vuelta (
-                  {desdePaquete ? `Vuelo #${vueloVuelta.id}` : `${vueloVuelta.origen} → ${vueloVuelta.destino}`}
-                  )
-                </h3>
-                {renderAsientos(asientosVuelta, 'vuelta')}
-                </div>
-            </div>
-
-            <div className="resumen-asientos">
-                <h5>🧍‍♂️ Selección ida</h5>
-                <ul>
-                {seleccionIda.map(a => (
-                    <li key={a.id}>Asiento {a.numero} ({a.vip ? 'VIP' : 'General'})</li>
-                ))}
-                </ul>
-
-                <h5>🔙 Selección vuelta</h5>
-                <ul>
-                {seleccionVuelta.map(a => (
-                    <li key={a.id}>Asiento {a.numero} ({a.vip ? 'VIP' : 'General'})</li>
-                ))}
-                </ul>
-
-                {desdePaquete ? (
-                  <button
-                    className="btn btn-success mt-3"
-                    disabled={!puedeConfirmar}
-                    onClick={crearYRedirigirPaquete}
-                  >
-                    Confirmar y ver carrito
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-success mt-3"
-                    disabled={!puedeConfirmar}
-                    onClick={confirmarSeleccion}
-                  >
-                    Confirmar y ver hoteles
-                  </button>
-                )}
-            </div>
+    <div className="contenedor-principal-asientos">
+      <div className="pantalla-asientos">
+        <div className={`pantalla paso-ida ${mostrarVuelta ? 'oculto' : ''}`}>
+          <h3>
+            Asientos para viaje de ida (
+            {desdePaquete ? `Viaje #${viajeIda.id}` : `${viajeIda.origen} → ${viajeIda.destino}`}
+            )
+          </h3>
+          {renderAsientos(asientosIda, 'ida')}
+          <p className="text-muted mt-3">🧍 Seleccioná tus asientos de ida para continuar.</p>
         </div>
 
+        <div className={`pantalla paso-vuelta ${mostrarVuelta ? 'visible' : ''}`}>
+          <h3>
+            Asientos para viaje de vuelta (
+            {desdePaquete ? `Viaje #${viajeVuelta.id}` : `${viajeVuelta.origen} → ${viajeVuelta.destino}`}
+            )
+          </h3>
+          {renderAsientos(asientosVuelta, 'vuelta')}
+        </div>
+      </div>
 
+      <div className="resumen-asientos">
+        <h5>🧍‍♂️ Selección ida</h5>
+        <ul>
+          {seleccionIda.map(a => (
+            <li key={a.id}>Asiento {a.numero} ({a.vip ? 'VIP' : 'General'})</li>
+          ))}
+        </ul>
+
+        <h5>🔙 Selección vuelta</h5>
+        <ul>
+          {seleccionVuelta.map(a => (
+            <li key={a.id}>Asiento {a.numero} ({a.vip ? 'VIP' : 'General'})</li>
+          ))}
+        </ul>
+
+        {desdePaquete ? (
+          <button
+            className="btn btn-success mt-3"
+            disabled={!puedeConfirmar}
+            onClick={crearYRedirigirPaquete}
+          >
+            Confirmar y ver carrito
+          </button>
+        ) : (
+          <button
+            className="btn btn-success mt-3"
+            disabled={!puedeConfirmar}
+            onClick={confirmarSeleccion}
+          >
+            Confirmar y ver hoteles
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 
