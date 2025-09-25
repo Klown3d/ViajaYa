@@ -15,12 +15,11 @@ import CreatePais from './Pages/Staff/Pais/Createpais';
 import ListCiudad from './Pages/Staff/Ciudades/ListCiudad';
 import CreateCiudad from './Pages/Staff/Ciudades/CreateCiudad';
 import ListPedidosPendientes from './Pages/Staff/Pendientes/ListPedidosPendientes';
-import ListAviones from './Pages/Staff/Aviones/ListAviones';
-import CreateAviones from './Pages/Staff/Aviones/CreateAviones';
-import ListVuelo from './Pages/Staff/Vuelos/ListVuelo';
-import CreateVuelo from './Pages/Staff/Vuelos/CreateVuelo';
-import ListAsientos from './Pages/Staff/Asientos/LIstAsientos';
-import VuelosDisponibles from './Pages/VuelosDisponibles';
+import ListBuses from './Pages/Staff/Buses/ListBuses';  // Cambiado de ListAviones
+import CreateBuses from './Pages/Staff/Buses/CreateBuses';  // Cambiado de CreateAviones
+import ListViajes from './Pages/Staff/Viajes/ListViajes';  // Cambiado de ListVuelo
+import CreateViajes from './Pages/Staff/Viajes/CreateViajes';  // Cambiado de CreateVuelo
+import ViajesDisponibles from './Pages/ViajesDisponibles';  // Cambiado de VuelosDisponibles
 import ListFacturas from './Pages/Staff/Facturas/ListFacturas';
 import DashboardStaff from './Pages/Staff/DashboardStaff';
 
@@ -28,7 +27,7 @@ function App() {
   return (
     <Routes>
       <Route path="/*" element={<Home />} />
-      <Route path="/vuelos-disponibles" element={<VuelosDisponibles />} />
+      <Route path="/viajes-disponibles" element={<ViajesDisponibles />} />  {/* Cambiado */}
       <Route path="/carrito" element={<Carrito />} />
 
       <Route
@@ -51,11 +50,10 @@ function App() {
         <Route path="ciudad/lista" element={<ListCiudad />} />
         <Route path="ciudad/crear" element={<CreateCiudad/>} />
         <Route path="paquetes_pendientes" element={<ListPedidosPendientes/>} />
-        <Route path="vuelos/lista" element={<ListVuelo/>} />
-        <Route path="vuelos/crear" element={<CreateVuelo />} />
-        <Route path="aviones/lista" element={<ListAviones />} />
-        <Route path="aviones/crear" element={<CreateAviones />} />
-        <Route path="asientos/:id" element={<ListAsientos />} />
+        <Route path="viajes/lista" element={<ListViajes/>} />  {/* Cambiado */}
+        <Route path="viajes/crear" element={<CreateViajes />} />  {/* Cambiado */}
+        <Route path="buses/lista" element={<ListBuses />} />  {/* Cambiado */}
+        <Route path="buses/crear" element={<CreateBuses />} />  {/* Cambiado */}
         <Route path="facturas" element={<ListFacturas />} />
       </Route>
     </Routes>
