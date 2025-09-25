@@ -121,12 +121,23 @@ class Paquetes(models.Model):
     descripcion = models.TextField(null=True, blank=True)
     personas = models.IntegerField(null=False, blank=False)
 
-    
     asiento_ida = models.ManyToManyField(AsientosBus, related_name='paquetes_asiento_ida', blank=True)
     asiento_vuelta = models.ManyToManyField(AsientosBus, related_name='paquetes_asiento_vuelta', blank=True)
 
-    viaje_ida = models.ForeignKey(Viajes, on_delete=models.DO_NOTHING, related_name='paquetes_ida')
-    viaje_vuelta = models.ForeignKey(Viajes, on_delete=models.DO_NOTHING, related_name='paquetes_vuelta')
+    viaje_ida = models.ForeignKey(
+        Viajes,
+        on_delete=models.DO_NOTHING,
+        related_name='paquetes_ida',
+        null=True,
+        blank=True
+    )
+    viaje_vuelta = models.ForeignKey(
+        Viajes,
+        on_delete=models.DO_NOTHING,
+        related_name='paquetes_vuelta',
+        null=True,
+        blank=True
+    )
 
     auto = models.ForeignKey(Autos, on_delete=models.DO_NOTHING, null=True, blank=True)
     hotel = models.ForeignKey(Hoteles, on_delete=models.DO_NOTHING, null=True, blank=True)
@@ -134,7 +145,8 @@ class Paquetes(models.Model):
     total = models.FloatField(null=False, blank=True)
 
     def __str__(self):
-        return f"Paquete {self.id} - Destino: {self.viaje_ida.destino.nombre}"
+        return f"Paquete {self.id} - Destino: {self.viaje_ida.destino.nombre if self.viaje_ida else 'Sin viaje asignado'}"
+
 
 class Carritos(models.Model):
     id = models.AutoField(primary_key=True)
