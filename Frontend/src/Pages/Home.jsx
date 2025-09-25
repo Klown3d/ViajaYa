@@ -39,7 +39,7 @@ function Welcome() {
   return (
     <div className="welcome">
       <h1 className="welcome__title">
-        Bienvenido a <span className="highlight">BusYA</span>{" "}
+        Bienvenido a <span className="highlight">ViajaYA</span>{" "}
         <i className="bx bx-bus" style={{ color: "#0d6efd" }}></i>
       </h1>
 

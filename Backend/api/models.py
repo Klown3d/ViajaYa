@@ -82,9 +82,9 @@ class Hoteles(models.Model):
 class Buses(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     nombre = models.CharField(max_length=100, null=False)
-    costo_km = models.IntegerField(null=False)  # Costo por kilómetro unificado
+    costo_km = models.IntegerField(null=False) 
     capacidad_bus = models.IntegerField(default=1)
-    asientos_vip = models.IntegerField(default=0)  # Si se quiere mantener la categoría VIP
+    asientos_vip = models.IntegerField(default=0)  
     asientos_general = models.IntegerField()
 
     def __str__(self):
@@ -98,13 +98,13 @@ class Viajes(models.Model):
     destino = models.ForeignKey(Ciudades, on_delete=models.DO_NOTHING, related_name='viajes_destino')
     fecha_salida = models.DateTimeField(null=True, blank=True)
     fecha_llegada = models.DateTimeField(null=True, blank=True)
-    distancia_km = models.IntegerField(default=0)  # Distancia del viaje en km
-    precio_base = models.IntegerField(default=0)  # Precio base calculado según distancia y costo_km
+    distancia_km = models.IntegerField(default=0) 
+    precio_base = models.IntegerField(default=0)  
 
     def __str__(self):
         return f"Viaje {self.id} - {self.origen.nombre} a {self.destino.nombre} - {self.fecha_salida}"
 
-# Cambiamos Asientos para que sea para buses
+
 class AsientosBus(models.Model):
     id = models.AutoField(primary_key=True)
     vip = models.BooleanField(default=False)
