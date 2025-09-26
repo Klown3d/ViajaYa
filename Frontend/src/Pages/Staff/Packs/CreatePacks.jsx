@@ -9,8 +9,8 @@ const CreatePacks = () => {
   const [form, setForm] = useState({
     descripcion: '',
     personas: 1,
-    vuelo_ida: '',
-    vuelo_vuelta: '',
+    viaje_ida: '',  // Cambiado de vuelo_ida
+    viaje_vuelta: '',  // Cambiado de vuelo_vuelta
     hotel: '',
     auto: '',
     total: 0,
@@ -18,16 +18,16 @@ const CreatePacks = () => {
 
   const [showModal, setShowModal] = useState(false);
     
-    const handleSuccess = () => {
-      setShowModal(true);
-    };
+  const handleSuccess = () => {
+    setShowModal(true);
+  };
     
-    const handleCloseModal = () => {
-      setShowModal(false);
-      navigate('/staff/paquetes/crear');
-    };
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/staff/paquetes/crear');
+  };
 
-  const [vuelos, setVuelos] = useState([]);
+  const [viajes, setViajes] = useState([]);  // Cambiado de vuelos
   const [autos, setAutos] = useState([]);
   const [hoteles, setHoteles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,19 +41,19 @@ const CreatePacks = () => {
 
     const fetchData = async () => {
       try {
-        const [vuelosRes, autosRes, hotelesRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/conseguir_vuelos/', { headers }),
+        const [viajesRes, autosRes, hotelesRes] = await Promise.all([
+          fetch('http://127.0.0.1:8000/conseguir_viajes/', { headers }),  // Cambiado endpoint
           fetch('http://127.0.0.1:8000/conseguir_autos/', { headers }),
           fetch('http://127.0.0.1:8000/conseguir_hoteles/', { headers }),
         ]);
 
-        const [vuelosData, autosData, hotelesData] = await Promise.all([
-          vuelosRes.json(),
+        const [viajesData, autosData, hotelesData] = await Promise.all([
+          viajesRes.json(),
           autosRes.json(),
           hotelesRes.json()
         ]);
 
-        setVuelos(vuelosData);
+        setViajes(viajesData);
         setAutos(autosData);
         setHoteles(hotelesData);
       } catch (error) {
@@ -69,7 +69,7 @@ const CreatePacks = () => {
 
     let parsedValue = value;
 
-    if (['personas', 'total', 'vuelo_ida', 'vuelo_vuelta', 'auto', 'hotel'].includes(name)) {
+    if (['personas', 'total', 'viaje_ida', 'viaje_vuelta', 'auto', 'hotel'].includes(name)) {
       parsedValue = value === '' ? '' : parseInt(value);
     }
 
@@ -99,8 +99,8 @@ const CreatePacks = () => {
           setForm({
             descripcion: '',
             personas: 1,
-            vuelo_ida: '',
-            vuelo_vuelta: '',
+            viaje_ida: '',  
+            viaje_vuelta: '', 
             hotel: '',
             auto: '',
             total: 0,
@@ -108,7 +108,7 @@ const CreatePacks = () => {
         } else {
           return res.json().then(data => {
             console.error('Errores:', data);
-            alert('Error al crear paquete');
+            alert('Error al crear paquete: ' + (data.error || 'Verifique los datos'));
           });
         }
       })
@@ -119,77 +119,84 @@ const CreatePacks = () => {
       });
   };
 
+  
+  const formatFecha = (fechaISO) => {
+    if (!fechaISO) return 'Fecha no disponible';
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleString('es-AR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   return (
     <div className="container mt-5" style={{ maxWidth: '600px' }}>
-      <h2 className="mb-4 text-center create-title">Crear Paquete</h2>
+      <h2 className="mb-4 text-center create-title">🚌 Crear Paquete de Viaje</h2>  
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="create-label">Descripción</label>
-          <textarea className="form-control" name="descripcion" value={form.descripcion} onChange={handleChange} />
+          <label className="create-label">Descripción del Paquete</label> 
+          <textarea 
+            className="form-control" 
+            name="descripcion" 
+            value={form.descripcion} 
+            onChange={handleChange}
+            placeholder="Ej: Paquete familiar a la montaña"
+            rows="3"
+          />
         </div>
 
         <div className="mb-3">
           <label className="create-label">Cantidad de personas</label>
-          <input type="number" className="form-control" name="personas" value={form.personas} onChange={handleChange} min="1" required />
+          <input 
+            type="number" 
+            className="form-control" 
+            name="personas" 
+            value={form.personas} 
+            onChange={handleChange} 
+            min="1" 
+            max="50"
+            required 
+          />
         </div>
 
         <div className="mb-3">
-          <label className="create-label">Vuelo de ida</label>
-          <select className="form-control" name="vuelo_ida" value={form.vuelo_ida} onChange={handleChange} required>
-            <option value="">Seleccionar vuelo</option>
-            {vuelos.map(vuelo => {
-              const fecha = new Date(vuelo.fecha);
-              const fechaFormateada = fecha.toLocaleString('es-AR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              });
-
-              return (
-                <option key={vuelo.id} value={vuelo.id}>
-                  Fecha: {fechaFormateada} - {vuelo.origen} a {vuelo.destino}
-                </option>
-              );
-            })}
+          <label className="create-label">Viaje de ida</label>  
+          <select className="form-control" name="viaje_ida" value={form.viaje_ida} onChange={handleChange} required>
+            <option value="">Seleccionar viaje de ida</option>  
+            {viajes.map(viaje => (
+              <option key={viaje.id} value={viaje.id}>
+                🚌 {viaje.bus} - {formatFecha(viaje.fecha_salida)} - {viaje.origen} → {viaje.destino}  {/* Información actualizada */}
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="mb-3">
-          <label className="create-label">Vuelo de vuelta</label>
-          <select className="form-control" name="vuelo_vuelta" value={form.vuelo_vuelta} onChange={handleChange} required>
-            <option value="">Seleccionar vuelo</option>
-              {vuelos
-                .filter(vuelo => {
-                  if (!form.vuelo_ida) return true;
+          <label className="create-label">Viaje de vuelta</label>  
+          <select className="form-control" name="viaje_vuelta" value={form.viaje_vuelta} onChange={handleChange} required>
+            <option value="">Seleccionar viaje de vuelta</option>  
+            {viajes
+              .filter(viaje => {
+                if (!form.viaje_ida) return true;
 
-                  const vueloIdaSeleccionado = vuelos.find(v => v.id === form.vuelo_ida);
-                  if (!vueloIdaSeleccionado) return false;
+                const viajeIdaSeleccionado = viajes.find(v => v.id === form.viaje_ida);
+                if (!viajeIdaSeleccionado) return false;
 
-                  const fechaIda = new Date(vueloIdaSeleccionado.fecha);
-                  const fechaVuelta = new Date(vuelo.fecha);
+                const fechaIda = new Date(viajeIdaSeleccionado.fecha_salida);
+                const fechaVuelta = new Date(viaje.fecha_salida);
 
-                  const mismoDestinoOrigen = vuelo.destino === vueloIdaSeleccionado.origen;
+                const mismoDestinoOrigen = viaje.destino === viajeIdaSeleccionado.origen;
 
-                  return fechaVuelta >= fechaIda && mismoDestinoOrigen;
-                })
-                .map(vuelo => {
-                  const fecha = new Date(vuelo.fecha);
-                  const fechaFormateada = fecha.toLocaleString('es-AR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  });
-
-                  return (
-                    <option key={vuelo.id} value={vuelo.id}>
-                      Fecha: {fechaFormateada} - {vuelo.origen} a {vuelo.destino}
-                    </option>
-                  );
-              })}
+                return fechaVuelta >= fechaIda && mismoDestinoOrigen;
+              })
+              .map(viaje => (
+                <option key={viaje.id} value={viaje.id}>
+                  🚌 {viaje.bus} - {formatFecha(viaje.fecha_salida)} - {viaje.origen} → {viaje.destino}  
+                </option>
+              ))}
           </select>
         </div>
 
@@ -198,7 +205,9 @@ const CreatePacks = () => {
           <select className="form-control" name="auto" value={form.auto} onChange={handleChange}>
             <option value="">Ninguno</option>
             {autos.map(auto => (
-              <option key={auto.id} value={auto.id}>{auto.modelo}</option>
+              <option key={auto.id} value={auto.id}>
+                🚗 {auto.marca} {auto.modelo} - ${auto.precio_dia}/día 
+              </option>
             ))}
           </select>
         </div>
@@ -209,21 +218,23 @@ const CreatePacks = () => {
             <option value="">Ninguno</option>
             {hoteles
               .filter(hotel => {
-                if (!form.vuelo_ida) return true;
+                if (!form.viaje_ida) return true;
 
-                const vueloIda = vuelos.find(v => v.id === form.vuelo_ida);
-                if (!vueloIda) return false;
+                const viajeIda = viajes.find(v => v.id === form.viaje_ida);
+                if (!viajeIda) return false;
 
-                return hotel.ciudad_nombre === vueloIda.destino;
+                return hotel.ciudad_nombre === viajeIda.destino;
               })
               .map(hotel => (
-                <option key={hotel.id} value={hotel.id}>{hotel.nombre}</option>
+                <option key={hotel.id} value={hotel.id}>
+                  🏨 {hotel.nombre} - {hotel.ciudad_nombre} - ${hotel.precio_noche}/noche  
+                </option>
             ))}
           </select>
         </div>
 
         <div className="mb-4">
-          <label className="create-label">Total</label>
+          <label className="create-label">Total del Paquete ($)</label>  
           <input
             type="number"
             className="form-control"
@@ -232,6 +243,7 @@ const CreatePacks = () => {
             onChange={handleChange}
             min="0"
             step="0.01"
+            placeholder="Ingrese el total del paquete"
             required
           />
         </div>
@@ -241,23 +253,23 @@ const CreatePacks = () => {
             {isLoading ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Guardando...
+                Creando Paquete...
               </>
             ) : (
-              'Guardar +'
+              '🚌 Crear Paquete' 
             )}
           </div>
         </button>
       </form>
-          {showModal && (
-            <SuccessModal
-              message="¡Paquete creado correctamente!"
-              onClose={handleCloseModal}
-            />
-          )}
+      
+      {showModal && (
+        <SuccessModal
+          message="¡Paquete de viaje creado correctamente!" 
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
 
 export default CreatePacks;
-

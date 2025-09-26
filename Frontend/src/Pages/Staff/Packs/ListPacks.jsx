@@ -6,7 +6,7 @@ const ListPacks = () => {
   const [paqueteEditar, setPaqueteEditar] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const [vuelos, setVuelos] = useState([]);
+  const [viajes, setViajes] = useState([]); 
   const [autos, setAutos] = useState([]);
   const [hoteles, setHoteles] = useState([]);
 
@@ -27,16 +27,16 @@ const ListPacks = () => {
       });
   };
 
-  const cargarVuelos = () => {
-    fetch("http://127.0.0.1:8000/conseguir_vuelos/", {
+  const cargarViajes = () => { 
+    fetch("http://127.0.0.1:8000/conseguir_viajes/", { 
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
       .then((res) => res.json())
-      .then((data) => setVuelos(data))
-      .catch((err) => console.error("Error al cargar vuelos", err));
+      .then((data) => setViajes(data))
+      .catch((err) => console.error("Error al cargar viajes", err));
   };
 
   const cargarAutos = () => {
@@ -65,7 +65,7 @@ const ListPacks = () => {
 
   useEffect(() => {
     cargarPaquetes();
-    cargarVuelos();
+    cargarViajes();
     cargarAutos();
     cargarHoteles();
   }, []);
@@ -73,8 +73,8 @@ const ListPacks = () => {
   const handleEditar = (paquete) => {
     setPaqueteEditar({
       ...paquete,
-      vuelo_ida: paquete.vuelo_ida || '',
-      vuelo_vuelta: paquete.vuelo_vuelta || '',
+      viaje_ida: paquete.viaje_ida || '', 
+      viaje_vuelta: paquete.viaje_vuelta || '', 
       auto: paquete.auto || '',
       hotel: paquete.hotel || '',
       total: paquete.total || 0,
@@ -85,8 +85,8 @@ const ListPacks = () => {
     const data = {
       descripcion: paqueteEditar.descripcion,
       personas: parseInt(paqueteEditar.personas),
-      vuelo_ida: parseInt(paqueteEditar.vuelo_ida),
-      vuelo_vuelta: parseInt(paqueteEditar.vuelo_vuelta),
+      viaje_ida: parseInt(paqueteEditar.viaje_ida),
+      viaje_vuelta: parseInt(paqueteEditar.viaje_vuelta), 
       auto: parseInt(paqueteEditar.auto),
       hotel: parseInt(paqueteEditar.hotel),
       total: parseFloat(paqueteEditar.total),
@@ -120,6 +120,18 @@ const ListPacks = () => {
 
   const handleCloseModal = () => setShowModal(false);
 
+
+  const formatFecha = (fechaISO) => {
+    if (!fechaISO) return "—";
+    return new Date(fechaISO).toLocaleString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="container mt-4">
       <div className="d-flex align-items-center mb-3 fw-bold gap-2" style={{ color: "#0d6efd", fontSize: "25px" }}>
@@ -135,8 +147,8 @@ const ListPacks = () => {
                 <th>ID</th>
                 <th>Descripción</th>
                 <th>Personas</th>
-                <th>Vuelo Ida</th>
-                <th>Vuelo Vuelta</th>
+                <th>Viaje Ida</th> 
+                <th>Viaje Vuelta</th> 
                 <th>Auto</th>
                 <th>Hotel</th>
                 <th>Total</th>
@@ -150,34 +162,25 @@ const ListPacks = () => {
                   <td>{pack.descripcion}</td>
                   <td>{pack.personas}</td>
                   <td>
-                    {new Date(pack.vuelo_ida_obj.fecha).toLocaleString("es-AR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}{" "}
-                    | <b>{pack.vuelo_ida_obj.origen_nombre || "—"}</b> a  <b> {pack.vuelo_ida_obj.destino_nombre || "—"} </b>
+                    {formatFecha(pack.viaje_ida_obj?.fecha_salida)}{" "} 
+                    | <b>{pack.viaje_ida_obj?.origen_nombre || "—"}</b> a <b>{pack.viaje_ida_obj?.destino_nombre || "—"}</b>
+                    {pack.viaje_ida_obj?.bus && <div><small>Bus: {pack.viaje_ida_obj.bus}</small></div>} 
                   </td>
 
                   <td>
-                    {new Date(pack.vuelo_vuelta_obj.fecha).toLocaleString("es-AR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}{" "}
-                    | <b> {pack.vuelo_vuelta_obj.origen_nombre || "—"} </b> a <b> {pack.vuelo_vuelta_obj.destino_nombre || "—"} </b>
+                    {formatFecha(pack.viaje_vuelta_obj?.fecha_salida)}{" "}
+                    | <b>{pack.viaje_vuelta_obj?.origen_nombre || "—"}</b> a <b>{pack.viaje_vuelta_obj?.destino_nombre || "—"}</b>
+                    {pack.viaje_vuelta_obj?.bus && <div><small>Bus: {pack.viaje_vuelta_obj.bus}</small></div>}
                   </td>
 
                   <td>{pack.auto || "—"}</td>
                   <td>{pack.hotel || "—"}</td>
-                  <td>  {pack.total.toLocaleString("es-AR", {
-                        style: "currency",
-                        currency: "ARS",
-                        minimumFractionDigits: 2,
-                      })}
+                  <td>
+                    {pack.total?.toLocaleString("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                      minimumFractionDigits: 2,
+                    }) || "—"}
                   </td>
                   <td>
                     <div className="d-flex justify-content-center gap-3">
@@ -226,32 +229,32 @@ const ListPacks = () => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Vuelo Ida</label>
+              <label className="form-label">Viaje Ida</label> 
               <select
                 className="form-control"
-                value={paqueteEditar.vuelo_ida}
-                onChange={(e) => setPaqueteEditar({ ...paqueteEditar, vuelo_ida: e.target.value })}
+                value={paqueteEditar.viaje_ida} 
+                onChange={(e) => setPaqueteEditar({ ...paqueteEditar, viaje_ida: e.target.value })}
               >
-                <option value="">Seleccione un vuelo</option>
-                {vuelos.map(v => (
+                <option value="">Seleccione un viaje</option> 
+                {viajes.map(v => (
                   <option key={v.id} value={v.id}>
-                    ID {v.id} - {v.origen} ➝ {v.destino}
+                    ID {v.id} - {v.origen} ➝ {v.destino} (Bus: {v.bus})
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Vuelo Vuelta</label>
+              <label className="form-label">Viaje Vuelta</label> 
               <select
                 className="form-control"
-                value={paqueteEditar.vuelo_vuelta}
-                onChange={(e) => setPaqueteEditar({ ...paqueteEditar, vuelo_vuelta: e.target.value })}
+                value={paqueteEditar.viaje_vuelta} 
+                onChange={(e) => setPaqueteEditar({ ...paqueteEditar, viaje_vuelta: e.target.value })}
               >
-                <option value="">Seleccione un vuelo</option>
-                {vuelos.map(v => (
+                <option value="">Seleccione un viaje</option> 
+                {viajes.map(v => (
                   <option key={v.id} value={v.id}>
-                    ID {v.id} - {v.origen} ➝ {v.destino}
+                    ID {v.id} - {v.origen} ➝ {v.destino} (Bus: {v.bus}) 
                   </option>
                 ))}
               </select>
@@ -266,7 +269,7 @@ const ListPacks = () => {
               >
                 <option value="">Seleccione un auto</option>
                 {autos.map(a => (
-                  <option key={a.id} value={a.id}>{a.modelo}</option>
+                  <option key={a.id} value={a.id}>{a.marca} {a.modelo}</option>
                 ))}
               </select>
             </div>
@@ -292,6 +295,7 @@ const ListPacks = () => {
                 className="form-control"
                 value={paqueteEditar.total}
                 onChange={(e) => setPaqueteEditar({ ...paqueteEditar, total: e.target.value })}
+                step="0.01"
               />
             </div>
 

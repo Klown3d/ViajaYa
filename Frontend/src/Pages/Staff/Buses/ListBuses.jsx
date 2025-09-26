@@ -3,65 +3,88 @@ import { useNavigate } from 'react-router-dom';
 import SuccessModal from '../../../components/SuccessModal.jsx';
 import '../../../styles/Staff/List.css';
 
-const ListAviones = () => {
-  const [aviones, setAviones] = useState([]);
-  const [avionEditar, setAvionEditar] = useState(null);
+const ListBuses = () => {
+  const [buses, setBuses] = useState([]);
+  const [busEditar, setBusEditar] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const token = localStorage.getItem('access');
 
-  const cargarAviones = () => {
-    fetch('http://127.0.0.1:8000/conseguir_aviones/', {
+  const cargarBuses = () => {
+    fetch('http://127.0.0.1:8000/conseguir_buses/', {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     })
       .then(res => {
-        if (!res.ok) throw new Error('Error al cargar aviones');
+        if (!res.ok) throw new Error('Error al cargar buses');
         return res.json();
       })
-      .then(data => setAviones(data))
+      .then(data => setBuses(data))
       .catch(err => {
         console.error('Error:', err);
-        alert('No se pudieron cargar los aviones');
+        alert('No se pudieron cargar los buses');
       });
   };
 
   useEffect(() => {
-    cargarAviones();
+    cargarBuses();
   }, []);
 
-  const handleEditar = (avion) => {
-    setAvionEditar(avion);
+  const handleEditar = (bus) => {
+    setBusEditar(bus);
+  };
+
+  const handleEliminar = (busId) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este bus?')) {
+      return;
+    }
+
+    fetch(`http://127.0.0.1:8000/actualizar_bus/${busId}/`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          alert('Bus eliminado correctamente');
+          cargarBuses();
+        } else {
+          alert('Error al eliminar el bus');
+        }
+      })
+      .catch(err => console.error('Error al eliminar:', err));
   };
 
   const handleUpdate = () => {
-    const capacidad_vip = Number(avionEditar.capacidad_vip || 0);
-    const capacidad_general = Number(avionEditar.capacidad_general || 0);
-    const capacidad_total = capacidad_vip + capacidad_general;
+    const asientos_vip = Number(busEditar.asientos_vip || 0);
+    const asientos_general = Number(busEditar.asientos_general || 0);
+    const capacidad_total = asientos_vip + asientos_general;
 
-    const avionActualizado = {
-      ...avionEditar,
-      capacidad_avion: capacidad_total,
+    const busActualizado = {
+      ...busEditar,
+      capacidad_bus: capacidad_total,
     };
 
-    fetch(`http://127.0.0.1:8000/actualizar_avion/${avionEditar.id}/`, {
+    fetch(`http://127.0.0.1:8000/actualizar_bus/${busEditar.id}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(avionActualizado),
+      body: JSON.stringify(busActualizado),
     })
       .then(res => {
         if (res.ok) {
           setShowModal(true);
-          setAvionEditar(null);
-          cargarAviones();
+          setBusEditar(null);
+          cargarBuses();
         } else {
-          alert('Error al actualizar el avión');
+          alert('Error al actualizar el bus');
         }
       })
       .catch(err => console.error('Error al actualizar:', err));
@@ -74,44 +97,49 @@ const ListAviones = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex align-items-center mb-3 fw-bold gap-2" style={{ color: "#0d6efd", fontSize: "25px" }}>
-        <i className="bx bx-paper-plane" style={{ fontSize: "2rem", color: "#0d6efd" }}></i>
-        Lista de Aviones
+        <i className="bx bx-bus" style={{ fontSize: "2rem", color: "#0d6efd" }}></i>
+        Lista de Buses
       </div>
 
       <div className="table-responsive" style={{ maxHeight: "70vh", overflowY: "auto" }}>
-        {aviones.length > 0 ? (
+        {buses.length > 0 ? (
           <table className="table table-striped table-bordered align-middle text-center">
             <thead className="table-primary text-center">
               <tr>
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Capacidad Total</th>
-                <th>VIP</th>
-                <th>General</th>
-                <th>Costo x km (VIP)</th>
-                <th>Costo x km (General)</th>
+                <th>Asientos VIP</th>
+                <th>Asientos General</th>
+                <th>Costo por km</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {aviones.map((avion) => (
-                <tr key={avion.id}>
-                  <td>{avion.id}</td>
-                  <td>{avion.nombre}</td>
-                  <td>{avion.capacidad_avion}</td>
-                  <td>{avion.capacidad_vip}</td>
-                  <td>{avion.capacidad_general}</td>
-                  <td>${avion.costo_km_vip}</td>
-                  <td>${avion.costo_km_general}</td>
+              {buses.map((bus) => (
+                <tr key={bus.id}>
+                  <td>{bus.id}</td>
+                  <td>{bus.nombre}</td>
+                  <td>{bus.capacidad_bus}</td>
+                  <td>{bus.asientos_vip}</td>
+                  <td>{bus.asientos_general}</td>
+                  <td>${bus.costo_km}</td>
                   <td>
                     <div className="d-flex justify-content-center gap-3">
                       <button
                         className="btn btn-primary btn-sm"
                         style={{ backgroundColor: "transparent", borderColor: "#0d6efd" }}
                         title="Modificar"
-                        onClick={() => handleEditar(avion)}
+                        onClick={() => handleEditar(bus)}
                       >
                         <i className="bx bx-edit" style={{ fontSize: "1.2rem", color: "#0d6efd" }}></i>
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        title="Eliminar"
+                        onClick={() => handleEliminar(bus.id)}
+                      >
+                        <i className="bx bx-trash" style={{ fontSize: "1.2rem", color: "#dc3545" }}></i>
                       </button>
                     </div>
                   </td>
@@ -121,34 +149,46 @@ const ListAviones = () => {
           </table>
         ) : (
           <p className="text-center fw-bold" style={{ color: "#0d6efd" }}>
-            No hay aviones disponibles.
+            No hay buses disponibles.
           </p>
         )}
       </div>
 
-      {avionEditar && (
+      {busEditar && (
         <div className="mt-5">
-          <h4 className="mb-3">Editar Avión ID {avionEditar.id}</h4>
+          <h4 className="mb-3">Editar Bus ID {busEditar.id}</h4>
           <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
             <div className="mb-3">
-              <label className="form-label">Nombre</label>
+              <label className="form-label">Nombre del Bus</label>
               <input
                 type="text"
                 className="form-control"
-                value={avionEditar.nombre}
-                onChange={(e) => setAvionEditar({ ...avionEditar, nombre: e.target.value })}
+                value={busEditar.nombre}
+                onChange={(e) => setBusEditar({ ...busEditar, nombre: e.target.value })}
+                placeholder="Ej: Bus Ejecutivo 500"
               />
             </div>
 
-            {/* Capacidad Total solo lectura */}
             <div className="mb-3">
-              <label className="form-label">Capacidad Total</label>
+              <label className="form-label">Costo por kilómetro ($)</label>
+              <input
+                type="number"
+                className="form-control"
+                value={busEditar.costo_km}
+                onChange={(e) => setBusEditar({ ...busEditar, costo_km: e.target.value })}
+                min="1"
+              />
+            </div>
+
+       
+            <div className="mb-3">
+              <label className="form-label">Capacidad Total Calculada</label>
               <input
                 type="number"
                 className="form-control"
                 value={
-                  Number(avionEditar.capacidad_vip || 0) +
-                  Number(avionEditar.capacidad_general || 0)
+                  Number(busEditar.asientos_vip || 0) +
+                  Number(busEditar.asientos_general || 0)
                 }
                 readOnly
                 style={{ backgroundColor: '#e9ecef' }}
@@ -156,54 +196,36 @@ const ListAviones = () => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Capacidad VIP</label>
+              <label className="form-label">Asientos VIP</label>
               <input
                 type="number"
                 className="form-control"
-                value={avionEditar.capacidad_vip}
-                onChange={(e) => setAvionEditar({ ...avionEditar, capacidad_vip: e.target.value })}
+                value={busEditar.asientos_vip}
+                onChange={(e) => setBusEditar({ ...busEditar, asientos_vip: e.target.value })}
+                min="0"
               />
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Capacidad General</label>
+              <label className="form-label">Asientos General</label>
               <input
                 type="number"
                 className="form-control"
-                value={avionEditar.capacidad_general}
-                onChange={(e) => setAvionEditar({ ...avionEditar, capacidad_general: e.target.value })}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Costo por km (VIP)</label>
-              <input
-                type="number"
-                className="form-control"
-                value={avionEditar.costo_km_vip}
-                onChange={(e) => setAvionEditar({ ...avionEditar, costo_km_vip: e.target.value })}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Costo por km (General)</label>
-              <input
-                type="number"
-                className="form-control"
-                value={avionEditar.costo_km_general}
-                onChange={(e) => setAvionEditar({ ...avionEditar, costo_km_general: e.target.value })}
+                value={busEditar.asientos_general}
+                onChange={(e) => setBusEditar({ ...busEditar, asientos_general: e.target.value })}
+                min="0"
               />
             </div>
 
             <button type="submit" className="btn btn-success">Guardar Cambios</button>
-            <button type="button" className="btn btn-secondary ms-2" onClick={() => setAvionEditar(null)}>Cancelar</button>
+            <button type="button" className="btn btn-secondary ms-2" onClick={() => setBusEditar(null)}>Cancelar</button>
           </form>
         </div>
       )}
 
       {showModal && (
         <SuccessModal
-          message="¡Avión modificado correctamente!"
+          message="¡Bus modificado correctamente!"
           onClose={handleCloseModal}
         />
       )}
@@ -211,4 +233,4 @@ const ListAviones = () => {
   );
 };
 
-export default ListAviones;
+export default ListBuses;

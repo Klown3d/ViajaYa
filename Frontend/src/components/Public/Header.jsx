@@ -15,7 +15,7 @@ function Header() {
     navigate("/");
   };
 
-    useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem('access');
 
     if (token) {
@@ -33,9 +33,7 @@ function Header() {
           return response.json();
         })
         .then(data => {
-
-            setUsername(data.nombre_usuario);
-    
+          setUsername(data.nombre_usuario);
         })
         .catch(error => {
           console.error('Error:', error);
@@ -57,10 +55,10 @@ function Header() {
         <Container>
           <Navbar.Brand as={Link} to="/" onClick={() => setExpanded(false)}>
             <i
-              className="bx bx-paper-plane"
+              className="bx bx-bus"  
               style={{ color: "#0d6efd", fontSize: "30px" }}
             ></i>
-            VolaYA
+            BusYA  
           </Navbar.Brand>
 
           <Navbar.Toggle
@@ -112,7 +110,7 @@ function Header() {
                   >
                     Cerrar sesión
                   </Nav.Link>
-                    <Nav.Link as={Link} to="/carrito" onClick={() => setExpanded(false)}>
+                  <Nav.Link as={Link} to="/carrito" onClick={() => setExpanded(false)}>
                     Carrito
                   </Nav.Link>
                 </>

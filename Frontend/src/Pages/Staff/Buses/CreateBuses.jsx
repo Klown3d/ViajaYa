@@ -3,26 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import '../../../styles/Staff/Create.css';
 import SuccessModal from '../../../components/SuccessModal';
 
-const CreateAviones = () => {
+const CreateBuses = () => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
   
-    const handleSuccess = () => {
-      setShowModal(true);
-    };
-  
-    const handleCloseModal = () => {
-      setShowModal(false);
-      navigate('/staff/aviones/crear');
-    };
+  const handleSuccess = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/staff/buses/crear');
+  };
 
   const [form, setForm] = useState({
     nombre: '',
-    costo_km_general: '',
-    costo_km_vip: '',
-    capacidad_vip: '',
-    capacidad_general: '',
+    costo_km: '',  
+    asientos_vip: '', 
+    asientos_general: '',  
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +39,17 @@ const CreateAviones = () => {
     const token = localStorage.getItem('access');
     setIsLoading(true);
 
-    fetch('http://127.0.0.1:8000/crear_avion/', {
+
+    const asientosVip = parseInt(form.asientos_vip) || 0;
+    const asientosGeneral = parseInt(form.asientos_general) || 0;
+    
+    if (asientosVip < 0 || asientosGeneral < 0) {
+      alert('El número de asientos no puede ser negativo');
+      setIsLoading(false);
+      return;
+    }
+
+    fetch('http://127.0.0.1:8000/crear_bus/', {  
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -51,19 +60,17 @@ const CreateAviones = () => {
       .then(res => {
         setIsLoading(false);
         if (res.status === 201) {
-          setShowModal(true)
+          setShowModal(true);
           setForm({
             nombre: '',
-            costo_km_general: '',
-            costo_km_vip: '',
-            capacidad_vip: '',
-            capacidad_general: '',
-          })
-
+            costo_km: '',
+            asientos_vip: '',
+            asientos_general: '',
+          });
         } else {
           return res.json().then(data => {
             console.error('Errores:', data);
-            alert('Error al crear avión');
+            alert('Error al crear bus: ' + (data.error || 'Verifique los datos'));
           });
         }
       })
@@ -74,68 +81,81 @@ const CreateAviones = () => {
       });
   };
 
+
+  const capacidadTotal = (parseInt(form.asientos_vip) || 0) + (parseInt(form.asientos_general) || 0);
+
   return (
     <div className="container mt-5" style={{ maxWidth: '600px' }}>
-      <h2 className="mb-4 text-center create-title">Agregar Avión</h2>
+      <h2 className="mb-4 text-center create-title">🚌 Agregar Bus</h2>  
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="create-label">Nombre</label>
+          <label className="create-label">Nombre del Bus</label> 
           <input
             type="text"
             className="form-control"
             name="nombre"
             value={form.nombre}
             onChange={handleChange}
+            placeholder="Ej: Bus Ejecutivo 500"
             required
           />
         </div>
 
         <div className="mb-3">
-          <label className="create-label">Costo por km (General)</label>
+          <label className="create-label">Costo por kilómetro ($)</label>  
           <input
             type="number"
             className="form-control"
-            name="costo_km_general"
-            value={form.costo_km_general}
+            name="costo_km"
+            value={form.costo_km}
             onChange={handleChange}
+            placeholder="Ej: 1000"
+            min="1"
             required
           />
         </div>
 
         <div className="mb-3">
-          <label className="create-label">Costo por km (VIP)</label>
+          <label className="create-label">Asientos VIP</label> 
           <input
             type="number"
             className="form-control"
-            name="costo_km_vip"
-            value={form.costo_km_vip}
+            name="asientos_vip"
+            value={form.asientos_vip}
             onChange={handleChange}
+            placeholder="Ej: 10"
+            min="0"
             required
           />
         </div>
 
         <div className="mb-3">
-          <label className="create-label">Capacidad VIP</label>
+          <label className="create-label">Asientos General</label>  
           <input
             type="number"
             className="form-control"
-            name="capacidad_vip"
-            value={form.capacidad_vip}
+            name="asientos_general"
+            value={form.asientos_general}
             onChange={handleChange}
+            placeholder="Ej: 40"
+            min="0"
             required
           />
         </div>
 
+   
         <div className="mb-3">
-          <label className="create-label">Capacidad General</label>
+          <label className="create-label">Capacidad Total Calculada</label>
           <input
-            type="number"
+            type="text"
             className="form-control"
-            name="capacidad_general"
-            value={form.capacidad_general}
-            onChange={handleChange}
-            required
+            value={`${capacidadTotal} asientos`}
+            disabled
+            style={{backgroundColor: '#f8f9fa', color: '#495057'}}
           />
+          <small className="text-muted">
+            VIP: {form.asientos_vip || 0} + General: {form.asientos_general || 0} = Total: {capacidadTotal}
+          </small>
         </div>
 
         <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
@@ -146,19 +166,20 @@ const CreateAviones = () => {
                 Guardando...
               </>
             ) : (
-              'Guardar +'
+              'Guardar Bus' 
             )}
           </div>
         </button>
       </form>
-          {showModal && (
-            <SuccessModal
-              message="¡Avion agregado correctamente!"
-              onClose={handleCloseModal}
-            />
-          )}
+      
+      {showModal && (
+        <SuccessModal
+          message="¡Bus agregado correctamente!" 
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
 
-export default CreateAviones;
+export default CreateBuses;  

@@ -74,7 +74,7 @@ const DashBoardStaff = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar: ciudad, país, hotel..."
+            placeholder="Buscar: ciudad, país, hotel, bus..."
             className="busqueda-input"
           />
         </div>
@@ -120,26 +120,28 @@ const DashBoardStaff = () => {
               </>
             )}
 
-            {resultados.vuelos.length > 0 && (
+
+            {resultados.viajes && resultados.viajes.length > 0 && (
               <>
-                <h4>Vuelos (relacionados con <b>"{query}"</b>)</h4>
+                <h4>Viajes (relacionados con <b>"{query}"</b>)</h4>
                 <ul>
-                  {resultados.vuelos.map(vuelo => (
-                    <li key={`vuelo-${vuelo.id}`}>
-                      {vuelo.avion}: {vuelo.origen} → {vuelo.destino} ({new Date(vuelo.fecha).toLocaleDateString()})
+                  {resultados.viajes.map(viaje => (
+                    <li key={`viaje-${viaje.id}`}>
+                      {viaje.bus}: {viaje.origen} → {viaje.destino} ({new Date(viaje.fecha_salida).toLocaleDateString()})
                     </li>
                   ))}
                 </ul>
               </>
             )}
 
-            {resultados.aviones.length > 0 && (
+       
+            {resultados.buses && resultados.buses.length > 0 && (
               <>
-                <h4>Aviones (relacionados con <b>"{query}"</b>)</h4>
+                <h4>Buses (relacionados con <b>"{query}"</b>)</h4>
                 <ul>
-                  {resultados.aviones.map(avion => (
-                    <li key={`avion-${avion.id}`}>
-                      {avion.nombre} - Capacidad: {avion.capacidad_avion}
+                  {resultados.buses.map(bus => (
+                    <li key={`bus-${bus.id}`}>
+                      {bus.nombre} - Capacidad: {bus.capacidad_bus}
                     </li>
                   ))}
                 </ul>
@@ -189,10 +191,11 @@ const DashBoardStaff = () => {
               <p>{data.total_autos}</p>
             </Link>
 
-            <Link to="/staff/aviones/lista" className="card card-aviones">
-              <i className='bx bxs-plane-alt icon'></i>
-              <h3>Total de aviones</h3>
-              <p>{data.total_aviones}</p>
+          
+            <Link to="/staff/buses/lista" className="card card-buses">
+              <i className='bx bxs-bus icon'></i> 
+              <h3>Total de buses</h3> 
+              <p>{data.total_buses}</p> 
             </Link>
           </div>
         ) : (

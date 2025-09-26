@@ -3,40 +3,40 @@ import { useNavigate } from 'react-router-dom';
 import SuccessModal from '../../../components/SuccessModal';
 import '../../../styles/Staff/Create.css';
 
-const ListVuelo = () => {
-  const [vuelos, setVuelos] = useState([]);
-  const [vueloEditar, setVueloEditar] = useState(null);
-  const [aviones, setAviones] = useState([]);
+const ListViajes = () => {
+  const [viajes, setViajes] = useState([]);
+  const [viajeEditar, setViajeEditar] = useState(null);
+  const [buses, setBuses] = useState([]);
   const [ciudades, setCiudades] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem('access');
 
-  const cargarVuelos = () => {
-    fetch('http://127.0.0.1:8000/conseguir_vuelos/', {
+  const cargarViajes = () => {
+    fetch('http://127.0.0.1:8000/conseguir_viajes/', {  
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       }
     })
       .then(res => res.json())
-      .then(data => setVuelos(data))
+      .then(data => setViajes(data))
       .catch(err => {
         console.error('Error:', err);
-        alert('No se pudieron cargar los vuelos');
+        alert('No se pudieron cargar los viajes');
       });
   };
 
-  const cargarAviones = () => {
-    fetch('http://127.0.0.1:8000/conseguir_aviones/', {
+  const cargarBuses = () => {  
+    fetch('http://127.0.0.1:8000/conseguir_buses/', { 
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       }
     })
       .then(res => res.json())
-      .then(data => setAviones(data))
-      .catch(err => console.error('Error al cargar aviones', err));
+      .then(data => setBuses(data))
+      .catch(err => console.error('Error al cargar buses', err));
   };
 
   const cargarCiudades = () => {
@@ -52,31 +52,57 @@ const ListVuelo = () => {
   };
 
   useEffect(() => {
-    cargarVuelos();
-    cargarAviones();
+    cargarViajes();
+    cargarBuses();
     cargarCiudades();
   }, []);
 
-  const handleAsientos = (vuelo) => {
-    navigate(`/staff/asientos/${vuelo.id}`, { state: { vuelo } });
+  const handleAsientos = (viaje) => {
+    navigate(`/staff/asientos/${viaje.id}`, { state: { viaje } });  
   };
 
-  const handleEditar = (vuelo) => {
-    setVueloEditar({
-      ...vuelo,
-      fecha: new Date(vuelo.fecha).toISOString().slice(0, 16), // formato para input datetime-local
+  const handleEditar = (viaje) => {
+    setViajeEditar({
+      ...viaje,
+      fecha_salida: new Date(viaje.fecha_salida).toISOString().slice(0, 16),
+      fecha_llegada: viaje.fecha_llegada ? new Date(viaje.fecha_llegada).toISOString().slice(0, 16) : '',
     });
+  };
+
+  const handleEliminar = (viajeId) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este viaje?')) {
+      return;
+    }
+
+    fetch(`http://127.0.0.1:8000/actualizar_viaje/${viajeId}/`, { 
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          alert('Viaje eliminado correctamente');
+          cargarViajes();
+        } else {
+          alert('Error al eliminar el viaje');
+        }
+      })
+      .catch(err => console.error('Error al eliminar:', err));
   };
 
   const handleUpdate = () => {
     const data = {
-      avion: parseInt(vueloEditar.avion),
-      origen: parseInt(vueloEditar.origen),
-      destino: parseInt(vueloEditar.destino),
-      fecha: vueloEditar.fecha,
+      bus: parseInt(viajeEditar.bus),
+      origen: parseInt(viajeEditar.origen),
+      destino: parseInt(viajeEditar.destino),
+      fecha_salida: viajeEditar.fecha_salida, 
+      fecha_llegada: viajeEditar.fecha_llegada, 
+      distancia_km: parseInt(viajeEditar.distancia_km) || 0,  
     };
 
-    fetch(`http://127.0.0.1:8000/actualizar_vuelo/${vueloEditar.id}/`, {
+    fetch(`http://127.0.0.1:8000/actualizar_viaje/${viajeEditar.id}/`, { 
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -87,12 +113,12 @@ const ListVuelo = () => {
       .then(res => {
         if (res.ok) {
           setShowModal(true);
-          setVueloEditar(null);
-          cargarVuelos();
+          setViajeEditar(null);
+          cargarViajes();
         } else {
           return res.json().then(err => {
-            console.error('Error al actualizar vuelo:', err);
-            alert('Error al actualizar el vuelo');
+            console.error('Error al actualizar viaje:', err);
+            alert('Error al actualizar el viaje');
           });
         }
       })
@@ -101,49 +127,75 @@ const ListVuelo = () => {
 
   const handleCloseModal = () => setShowModal(false);
 
+
+  const calcularDuracion = (fechaSalida, fechaLlegada) => {
+    if (!fechaSalida || !fechaLlegada) return 'N/A';
+    const salida = new Date(fechaSalida);
+    const llegada = new Date(fechaLlegada);
+    const diffMs = llegada - salida;
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${diffHours}h ${diffMinutes}m`;
+  };
+
   return (
     <div className="container mt-4">
       <div className="d-flex align-items-center mb-3 fw-bold gap-2" style={{ color: "#0d6efd", fontSize: "25px" }}>
         <i className="bx bx-calendar-week" style={{ fontSize: "2rem", color: "#0d6efd" }}></i>
-        Lista de Vuelos
+        Lista de Viajes 
       </div>
 
       <div className="table-responsive" style={{ maxHeight: "70vh", overflowY: "auto" }}>
-        {vuelos.length > 0 ? (
+        {viajes.length > 0 ? (
           <table className="table table-striped table-bordered align-middle text-center">
             <thead className="table-primary">
               <tr>
                 <th>ID</th>
-                <th>Avión (ID)</th>
-                <th>Origen (ID)</th>
-                <th>Destino (ID)</th>
-                <th>Fecha</th>
+                <th>Bus</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Fecha Salida</th>
+                <th>Fecha Llegada</th>
+                <th>Duración</th>
+                <th>Precio Base</th>
                 <th>Asientos</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {vuelos.map((vuelo) => (
-                <tr key={vuelo.id}>
-                  <td>{vuelo.id}</td>
-                  <td>{vuelo.avion}</td>
-                  <td>{vuelo.origen}</td>
-                  <td>{vuelo.destino}</td>
-                  <td>{new Date(vuelo.fecha).toLocaleString()}</td>
+              {viajes.map((viaje) => (
+                <tr key={viaje.id}>
+                  <td>{viaje.id}</td>
+                  <td>{viaje.bus}</td>
+                  <td>{viaje.origen}</td>
+                  <td>{viaje.destino}</td>
+                  <td>{new Date(viaje.fecha_salida).toLocaleString()}</td>  
+                  <td>{viaje.fecha_llegada ? new Date(viaje.fecha_llegada).toLocaleString() : 'N/A'}</td>
+                  <td>{calcularDuracion(viaje.fecha_salida, viaje.fecha_llegada)}</td> 
+                  <td>${viaje.precio_base?.toLocaleString() || '0'}</td> 
                   <td>
-                    <button className="btn btn-primary" onClick={() => handleAsientos(vuelo)}>
+                    <button className="btn btn-primary" onClick={() => handleAsientos(viaje)}>
                       <i className='bx bx-chair'></i>
                     </button>
                   </td>
                   <td>
-                    <button
-                      onClick={() => handleEditar(vuelo)}
-                      className="btn btn-primary btn-sm"
-                      style={{ backgroundColor: "transparent", borderColor: "#0d6efd" }}
-                      title="Modificar"
-                    >
-                      <i className="bx bx-edit" style={{ fontSize: "1.2rem", color: "#0d6efd" }}></i>
-                    </button>
+                    <div className="d-flex justify-content-center gap-2">
+                      <button
+                        onClick={() => handleEditar(viaje)}
+                        className="btn btn-primary btn-sm"
+                        style={{ backgroundColor: "transparent", borderColor: "#0d6efd" }}
+                        title="Modificar"
+                      >
+                        <i className="bx bx-edit" style={{ fontSize: "1.2rem", color: "#0d6efd" }}></i>
+                      </button>
+                      <button
+                        onClick={() => handleEliminar(viaje.id)}
+                        className="btn btn-danger btn-sm"
+                        title="Eliminar"
+                      >
+                        <i className="bx bx-trash" style={{ fontSize: "1.2rem", color: "#dc3545" }}></i>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -151,26 +203,26 @@ const ListVuelo = () => {
           </table>
         ) : (
           <p className="text-center fw-bold" style={{ color: "#0d6efd" }}>
-            No hay vuelos disponibles.
+            No hay viajes disponibles. 
           </p>
         )}
       </div>
 
-      {vueloEditar && (
+      {viajeEditar && (
         <div className="mt-5">
-          <h4>Editar Vuelo ID {vueloEditar.id}</h4>
+          <h4>Editar Viaje ID {viajeEditar.id}</h4> 
           <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
             <div className="mb-3">
-              <label className="form-label">Avión</label>
+              <label className="form-label">Bus</label> 
               <select
                 className="form-control"
-                value={vueloEditar.avion}
-                onChange={(e) => setVueloEditar({ ...vueloEditar, avion: e.target.value })}
+                value={viajeEditar.bus}
+                onChange={(e) => setViajeEditar({ ...viajeEditar, bus: e.target.value })}
               >
-                <option value="">Seleccione un avión</option>
-                {aviones.map(a => (
-                  <option key={a.id} value={a.id}>
-                    {a.nombre} (ID {a.id})
+                <option value="">Seleccione un bus</option>
+                {buses.map(b => (
+                  <option key={b.id} value={b.id}>
+                    {b.nombre} (ID {b.id})
                   </option>
                 ))}
               </select>
@@ -179,8 +231,8 @@ const ListVuelo = () => {
               <label className="form-label">Origen</label>
               <select
                 className="form-control"
-                value={vueloEditar.origen}
-                onChange={(e) => setVueloEditar({ ...vueloEditar, origen: e.target.value })}
+                value={viajeEditar.origen}
+                onChange={(e) => setViajeEditar({ ...viajeEditar, origen: e.target.value })}
               >
                 <option value="">Seleccione origen</option>
                 {ciudades.map(c => (
@@ -192,8 +244,8 @@ const ListVuelo = () => {
               <label className="form-label">Destino</label>
               <select
                 className="form-control"
-                value={vueloEditar.destino}
-                onChange={(e) => setVueloEditar({ ...vueloEditar, destino: e.target.value })}
+                value={viajeEditar.destino}
+                onChange={(e) => setViajeEditar({ ...viajeEditar, destino: e.target.value })}
               >
                 <option value="">Seleccione destino</option>
                 {ciudades.map(c => (
@@ -202,23 +254,42 @@ const ListVuelo = () => {
               </select>
             </div>
             <div className="mb-3">
-              <label className="form-label">Fecha</label>
+              <label className="form-label">Fecha Salida</label>  
               <input
                 type="datetime-local"
                 className="form-control"
-                value={vueloEditar.fecha}
-                onChange={(e) => setVueloEditar({ ...vueloEditar, fecha: e.target.value })}
+                value={viajeEditar.fecha_salida}
+                onChange={(e) => setViajeEditar({ ...viajeEditar, fecha_salida: e.target.value })}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Fecha Llegada</label>  
+              <input
+                type="datetime-local"
+                className="form-control"
+                value={viajeEditar.fecha_llegada}
+                onChange={(e) => setViajeEditar({ ...viajeEditar, fecha_llegada: e.target.value })}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Distancia (km)</label>  
+              <input
+                type="number"
+                className="form-control"
+                value={viajeEditar.distancia_km || ''}
+                onChange={(e) => setViajeEditar({ ...viajeEditar, distancia_km: e.target.value })}
+                min="1"
               />
             </div>
             <button type="submit" className="btn btn-success">Guardar Cambios</button>
-            <button type="button" className="btn btn-secondary ms-2" onClick={() => setVueloEditar(null)}>Cancelar</button>
+            <button type="button" className="btn btn-secondary ms-2" onClick={() => setViajeEditar(null)}>Cancelar</button>
           </form>
         </div>
       )}
 
       {showModal && (
         <SuccessModal
-          message="¡Vuelo actualizado correctamente!"
+          message="¡Viaje actualizado correctamente!"  
           onClose={handleCloseModal}
         />
       )}
@@ -226,4 +297,4 @@ const ListVuelo = () => {
   );
 };
 
-export default ListVuelo;
+export default ListViajes;  

@@ -124,7 +124,7 @@ function Search() {
     }
 
     setError('');
-    // console.log('Formulario válido');
+    
 
 const buscarDestinos = async () => {
   try {
@@ -147,7 +147,7 @@ const buscarDestinos = async () => {
     }
 
     const data = await res.json();
-    // console.log(data);
+
 
     const autoSeleccionado = autos.find(a => a.id === parseInt(autoSeleccionadoId));
 
@@ -184,9 +184,9 @@ const buscarDestinos = async () => {
   return (
     <div className="container py-4">
       <form className="container mt-4" onSubmit={handleSubmit}>
-        {/* Primera fila: Origen, Destino, Fecha de ida, Fecha vuelta */}
+
         <div className="row g-3 align-items-end">
-          {/* Origen */}
+
           <div className="col-md-3 position-relative">
             <label className="form-label">Origen:</label>
             <input
@@ -212,7 +212,7 @@ const buscarDestinos = async () => {
             )}
           </div>
 
-          {/* Destino */}
+
           <div className="col-md-3 position-relative">
             <label className="form-label">Destino:</label>
             <input
@@ -238,7 +238,7 @@ const buscarDestinos = async () => {
             )}
           </div>
 
-          {/* Fecha ida */}
+
           <div className="col-md-3">
             <label className="form-label">Fecha de ida:</label>
             <input
@@ -250,7 +250,7 @@ const buscarDestinos = async () => {
             />
           </div>
 
-          {/* Fecha vuelta */}
+
           <div className="col-md-3">
             <label className="form-label">Fecha vuelta:</label>
             <input
@@ -263,9 +263,9 @@ const buscarDestinos = async () => {
           </div>
         </div>
 
-        {/* Segunda fila: Personas y Autos */}
+
         <div className="row mt-3 g-3 align-items-end">
-          {/* Personas */}
+
           <div className="col-md-3">
             <label className="form-label">Personas:</label>
             <input
@@ -278,7 +278,7 @@ const buscarDestinos = async () => {
             />
           </div>
 
-          {/* Autos */}
+
           <div className="col-md-6">
             <label className="form-label">Autos:</label>
             <select
@@ -296,7 +296,7 @@ const buscarDestinos = async () => {
             </select>
           </div>
 
-          {/* Botón buscar */}
+
           <div className="col-md-3 d-grid">
             <button type="submit" className="btn btn-primary">
               <i className="bx bx-search me-2"></i>Buscar
@@ -304,7 +304,7 @@ const buscarDestinos = async () => {
           </div>
         </div>
 
-        {/* Mensaje de error */}
+
         {error && <div className="alert alert-danger mt-3">{error}</div>}
       </form>
     </div>

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAuth } from "../../context/AuthContext"; // Ajusta el path
+import { useAuth } from "../../context/AuthContext"; 
 
 function VerifyToken() {
   const { setIsAuthenticated, setUserData } = useAuth();

@@ -128,7 +128,7 @@ const Carrito = () => {
               <div key={reserva.id} className="reserva-item">
                 <p><strong>Descripción:</strong> {reserva.descripcion || 'Sin descripción'}</p>
                 <p><strong>Personas:</strong> {reserva.personas}</p>
-                {/* Cambiamos Vuelo por Viaje */}
+                {}
                 <p><strong>Viaje Ida:</strong> {reserva.viaje_ida_obj?.origen_nombre} → {reserva.viaje_ida_obj?.destino_nombre}</p>
                 <p><strong>Fecha Viaje Ida:</strong> {formatFecha(reserva.viaje_ida_fecha)}</p>
                 <p><strong>Viaje Vuelta:</strong> {reserva.viaje_vuelta_obj?.origen_nombre} → {reserva.viaje_vuelta_obj?.destino_nombre}</p>

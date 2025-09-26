@@ -16,10 +16,10 @@ const SidebarStaff = () => {
         <ul>
           <li>
             <Link to="/staff/">
-            <button className="sidebar-toggle" onClick={() => toggleMenu('dashboard')}>
-              < i className='bx  bx-home-alt-2'  ></i>  Dashboard
-              <i className={`bx bx-transparentt-${openMenu === 'dashboard' ? 'up' : 'down'}`}></i>
-            </button>
+              <button className="sidebar-toggle" onClick={() => toggleMenu('dashboard')}>
+                <i className='bx bx-home-alt-2'></i> Dashboard
+                <i className={`bx bx-transparentt-${openMenu === 'dashboard' ? 'up' : 'down'}`}></i>
+              </button>
             </Link>
           </li>
 
@@ -107,42 +107,44 @@ const SidebarStaff = () => {
             )}
           </li>
 
+          {/* Cambiado: Aviones → Buses */}
           <li>
-            <button className="sidebar-toggle" onClick={() => toggleMenu('aviones')}>
-              <i className='bx bx-paper-plane'></i> Aviones
-              <i className={`bx bx-chevron-${openMenu === 'aviones' ? 'up' : 'down'}`}></i>
+            <button className="sidebar-toggle" onClick={() => toggleMenu('buses')}>
+              <i className='bx bx-bus'></i> Buses {/* Icono cambiado */}
+              <i className={`bx bx-chevron-${openMenu === 'buses' ? 'up' : 'down'}`}></i>
             </button>
-            {openMenu === 'aviones' && (
+            {openMenu === 'buses' && (
               <ul className="sidebar-submenu">
                 <li>
-                  <Link to="/staff/aviones/lista">
-                    <i className="bx bx-list-ul"></i> Listar Aviones
+                  <Link to="/staff/buses/lista">
+                    <i className="bx bx-list-ul"></i> Listar Buses {/* Texto cambiado */}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/staff/aviones/crear">
-                    <i className="bx bx-plus"></i> Agregar Aviones
+                  <Link to="/staff/buses/crear">
+                    <i className="bx bx-plus"></i> Agregar Bus {/* Texto cambiado */}
                   </Link>
                 </li>
               </ul>
             )}
           </li>
 
+          {/* Cambiado: Vuelos → Viajes */}
           <li>
-            <button className="sidebar-toggle" onClick={() => toggleMenu('vuelos')}>
-              <i className='bx bx-calendar-week'></i> Vuelos
-              <i className={`bx bx-chevron-${openMenu === 'vuelos' ? 'up' : 'down'}`}></i>
+            <button className="sidebar-toggle" onClick={() => toggleMenu('viajes')}>
+              <i className='bx bx-calendar-week'></i> Viajes {/* Texto cambiado */}
+              <i className={`bx bx-chevron-${openMenu === 'viajes' ? 'up' : 'down'}`}></i>
             </button>
-            {openMenu === 'vuelos' && (
+            {openMenu === 'viajes' && (
               <ul className="sidebar-submenu">
                 <li>
-                  <Link to="/staff/vuelos/lista">
-                    <i className="bx bx-list-ul"></i> Listar Vuelos
+                  <Link to="/staff/viajes/lista">
+                    <i className="bx bx-list-ul"></i> Listar Viajes {/* Texto cambiado */}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/staff/vuelos/crear">
-                    <i className="bx bx-plus"></i> Agregar Vuelos
+                  <Link to="/staff/viajes/crear">
+                    <i className="bx bx-plus"></i> Agregar Viaje {/* Texto cambiado */}
                   </Link>
                 </li>
               </ul>
