@@ -1,7 +1,6 @@
-# Bienvenido a VolaYa!
+# Bienvenido a ViajaYA!
 
-Hola! Somos **VolaYa**. Una empresa ficticia creada por 4 alumnos de la Técnica 7 De Lomas De Zamora (E.E.S.T.N 7), creamos este proyecto para participar en las olimpiadas nacional de Programación.
-
+Hola! Somos **ViajaYa**. Un e-comerce encargado en la venta de viajes en buses a cualquier destino!
 
 
 Vamos a tener que descargar en nuestro equipo los siguientes elementos:
